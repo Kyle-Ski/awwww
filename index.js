@@ -32,15 +32,17 @@ app.get('/awww', (req, res, next) => {
         let array = []
         newposts.map((post) => {
             let videoPosts = new Object()
-            if(post.preview.reddit_video_preview){
+            if(post.preview.reddit_video_preview !== undefined){
                 videoPosts.id = i
                 videoPosts.video = post.preview.reddit_video_preview.fallback_url
+                videoPosts.title = post.title
                 array.push(videoPosts)
                 i++
                 // console.log("preview",post.preview.reddit_video_preview.fallback_url)
-            } else if(post.secure_media){
+            } else if(post.secure_media && post.secure_media.reddit_video !== undefined){
                 videoPosts.id = i
                 videoPosts.video = post.secure_media.reddit_video.fallback_url
+                videoPosts.title = post.title
                 array.push(videoPosts)
                 i++
                 // console.log("no video", post.secure_media.reddit_video.fallback_url)
