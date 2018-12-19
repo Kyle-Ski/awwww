@@ -53,6 +53,29 @@ app.get('/awww', (req, res, next) => {
     .catch(err => console.error('before general error:',err))
 })
 
+app.get('/starwars', (req, res, next) => {
+    r.getHot('PrequelMemes').map(post => post).then(post => {
+        const newposts = post.splice(2)
+        let i = 1
+        let array = []
+        newposts.map((post) => {
+            let urlPre = post.url.slice(8,14)
+            if(post.url && (urlPre !== 'i.imgu' && urlPre !=='imgur.')){
+                console.log('post:', post.url.slice(8,14))
+            let videoPosts = new Object()
+                videoPosts.id = i
+                videoPosts.image = post.url
+                videoPosts.title = post.title
+                array.push(videoPosts)
+                i++
+            } 
+        })
+    return res.json({meme: array})
+    })
+    .catch(err => console.error('before general error:',err))
+})
+
+
 app.use(notFound);
 app.use(errorHandler);
 
