@@ -32,7 +32,9 @@ app.get('/awww', (req, res, next) => {
         let array = []
         newposts.map((post) => {
             let videoPosts = new Object()
+            let urlEnd = post.url.slice(-3)
             if(post.preview.reddit_video_preview !== undefined){
+                // post.preview.reddit_video_preview !== undefined
                 videoPosts.id = i
                 videoPosts.video = post.preview.reddit_video_preview.fallback_url
                 videoPosts.title = post.title
@@ -46,6 +48,12 @@ app.get('/awww', (req, res, next) => {
                 array.push(videoPosts)
                 i++
                 // console.log("no video", post.secure_media.reddit_video.fallback_url)
+            } else if(urlEnd === 'gif'){
+                videoPosts.id = i
+                videoPosts.video = post.url
+                videoPosts.title = post.title
+                array.push(videoPosts)
+                i++ 
             }
         })
     return res.json({aww: array})
@@ -60,8 +68,7 @@ app.get('/starwars', (req, res, next) => {
         let array = []
         newposts.map((post) => {
             let urlPre = post.url.slice(8,14)
-            if(post.url && (urlPre !== 'i.imgu' && urlPre !=='imgur.')){
-                console.log('post:', post.url.slice(8,14))
+            if(post.url && (urlPre !== 'i.imgu' && urlPre !=='imgur.' && urlPre !== 'v.redd')){
             let videoPosts = new Object()
                 videoPosts.id = i
                 videoPosts.image = post.url
