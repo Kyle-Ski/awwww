@@ -82,6 +82,19 @@ app.get('/starwars', (req, res, next) => {
     .catch(err => console.error('before general error:',err))
 })
 
+app.get('/space', (req, res, next) => {
+    r.getHot('Space').map(post => post).then(post => {
+        const hotPosts = post.splice(1, 21)
+        let goodPosts = hotPosts.map((post, i) => {
+            if(!post.link_flair_text && post.url) {
+                let thePost = {key: i, title: post.title, thumbnail: post.thumbnail, url: post.url}
+                return thePost
+            }
+        })
+        res.json({posts: goodPosts})
+    })
+    .catch(err => console.error(err))
+})
 
 app.use(notFound);
 app.use(errorHandler);
