@@ -84,16 +84,24 @@ app.get('/starwars', (req, res, next) => {
 
 app.get('/space', (req, res, next) => {
     r.getHot('Space').map(post => post).then(post => {
-        const hotPosts = post.splice(1, 21)
-        let goodPosts = hotPosts.map((post, i) => {
+        const hotPosts = post.splice(1)
+        let goodPosts = hotPosts.reduce((accum, post, i) => {
+            let urlPre = post.url.slice(8,14)
             if(!post.link_flair_text && post.url) {
-                let thePost = {key: i, title: post.title, thumbnail: post.thumbnail, url: post.url}
-                return thePost
+                let thePost = {key: i, title: post.title, thumbnail: post.thumbnail, url: post.url, isPicture: false}
+                accum.push(thePost)
+                return accum
             }
-        })
+            else if(post.url && (urlPre !== 'i.imgu' && urlPre !=='imgur.' && urlPre !== 'v.redd')){
+                let picPost = {key: i, title: post.title, thumbnail: post.thumbnail, url: post.url, isPicture: true}
+                accum.push(picPost)
+                return accum
+            }
+            return accum
+        },[])
         res.json({posts: goodPosts})
     })
-    .catch(err => console.error(err))
+    .catch(err => console.error('Catch error:',err))
 })
 
 app.use(notFound);
